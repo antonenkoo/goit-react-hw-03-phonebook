@@ -7,7 +7,6 @@ import { ListStyled } from './styles';
 
 export class App extends Component {
   state = {
-    name: 'lol',
     contacts: [
       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
       { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
@@ -16,13 +15,10 @@ export class App extends Component {
   };
 
   onChange = e => {
-    console.log(e.target.value);
     this.setState({ filter: e.target.value });
   };
 
   onSubmit = data => {
-    console.log('onSubmit in APP');
-    console.log(data);
     if (data.name === '' || data.number === '' || data.name.includes('  ')) {
       return alert(`Input is still empty !`);
     }
@@ -40,7 +36,6 @@ export class App extends Component {
   };
 
   onDeleteClick = id => {
-    // console.log('onDelete in APP', id);
     this.setState({
       contacts: this.state.contacts.filter(contact => {
         return contact.id !== id;
@@ -53,6 +48,21 @@ export class App extends Component {
       contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
     );
   };
+
+  componentDidMount() {
+    console.log('App componentDidMount');
+
+    const contacts = localStorage.getItem('contacts');
+    const parsedJson = JSON.parse(contacts);
+    if (parsedJson) {
+      this.setState({ contacts: parsedJson });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('App ComponentDidUpdate');
+    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+  }
 
   render() {
     const visibleContacts = this.changeFilter();
